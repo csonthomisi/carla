@@ -53,6 +53,7 @@ struct FCameraGBufferUint8;
 struct FCameraGBufferFloat;
 class AV2XSensor;
 class ACustomV2XSensor;
+class AInfrastructureLidar_HesaiAT128;
 
 namespace carla {
 namespace sensor {
@@ -85,7 +86,8 @@ namespace sensor {
     std::pair<FCameraGBufferUint8 *, s11n::GBufferUint8Serializer>,
     std::pair<FCameraGBufferFloat *, s11n::GBufferFloatSerializer>,
     std::pair<AV2XSensor *, s11n::CAMDataSerializer>,
-    std::pair<ACustomV2XSensor *, s11n::CustomV2XDataSerializer>
+    std::pair<ACustomV2XSensor *, s11n::CustomV2XDataSerializer>,
+    std::pair<AInfrastructureLidar_HesaiAT128 *, s11n::LidarSerializer>
     
 
   >;
@@ -117,5 +119,6 @@ namespace sensor {
 #include "Carla/Sensor/WorldObserver.h"
 #include "Carla/Sensor/V2XSensor.h"
 #include "Carla/Sensor/CustomV2XSensor.h"
+#include "Carla/Sensor/InfrastructureLidar_HesaiAT128.h"
 
 #endif // LIBCARLA_SENSOR_REGISTRY_WITH_SENSOR_INCLUDES

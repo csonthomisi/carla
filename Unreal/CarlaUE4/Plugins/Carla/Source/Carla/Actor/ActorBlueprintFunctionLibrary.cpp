@@ -1021,6 +1021,27 @@ void UActorBlueprintFunctionLibrary::MakeLidarDefinition(
       LowerFOV,
       HorizontalFOV});
   }
+  else if (Id == "hesai_at128") {
+    UpperFOV.RecommendedValues = { TEXT("12.9") };
+    LowerFOV.RecommendedValues = { TEXT("-12.5") };
+    Channels.RecommendedValues = { TEXT("128") };
+    Range.RecommendedValues = { TEXT("200") };
+    Frequency.RecommendedValues = { TEXT("20") };
+    Definition.Variations.Append({
+      Channels,
+      Range,
+      PointsPerSecond,
+      Frequency,
+      UpperFOV,
+      LowerFOV,
+      AtmospAttenRate,
+      NoiseSeed,
+      DropOffGenRate,
+      DropOffIntensityLimit,
+      DropOffAtZeroIntensity,
+      StdDevLidar,
+      HorizontalFOV});
+  }
   else {
     DEBUG_ASSERT(false);
   }
