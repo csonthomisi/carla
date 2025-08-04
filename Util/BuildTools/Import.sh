@@ -48,4 +48,5 @@ done
 # Convert comma-separated string to array of unique elements.
 IFS="," read -r -a PY_VERSION_LIST <<< "${PY_VERSION_LIST}"
 
-/usr/bin/env python${PY_VERSION_LIST[0]} ${CARLA_BUILD_TOOLS_FOLDER}/Import.py ${ARGS}
+# /usr/bin/env python${PY_VERSION_LIST[0]} ${CARLA_BUILD_TOOLS_FOLDER}/Import.py ${ARGS}
+/usr/bin/env python3 ${CARLA_BUILD_TOOLS_FOLDER}/Import.py ${ARGS}
