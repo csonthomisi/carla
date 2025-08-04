@@ -55,6 +55,9 @@ class AV2XSensor;
 class ACustomV2XSensor;
 class AInfrastructureLidar_HesaiAT128;
 class AInfrastructureRGBCamera;
+class AInfrastructureLidar;
+class AInfrastructureLidar_OusterOS2BH128;
+class AInfrastructureLidar_OusterOS2128;
 
 namespace carla {
 namespace sensor {
@@ -89,7 +92,10 @@ namespace sensor {
     std::pair<AV2XSensor *, s11n::CAMDataSerializer>,
     std::pair<ACustomV2XSensor *, s11n::CustomV2XDataSerializer>,
     std::pair<AInfrastructureLidar_HesaiAT128 *, s11n::LidarSerializer>,
-    std::pair<AInfrastructureRGBCamera *, s11n::ImageSerializer>
+    std::pair<AInfrastructureRGBCamera *, s11n::ImageSerializer>,
+    std::pair<AInfrastructureLidar *, s11n::LidarSerializer>,
+    std::pair<AInfrastructureLidar_OusterOS2BH128 *, s11n::LidarSerializer>,
+    std::pair<AInfrastructureLidar_OusterOS2128 *, s11n::LidarSerializer>
     
 
   >;
@@ -123,5 +129,8 @@ namespace sensor {
 #include "Carla/Sensor/CustomV2XSensor.h"
 #include "Carla/Sensor/InfrastructureLidar_HesaiAT128.h"
 #include "Carla/Sensor/InfrastructureRGBCamera.h"
+#include "Carla/Sensor/InfrastructureLidar.h"
+#include "Carla/Sensor/InfrastructureLidar_OusterOS2BH128.h"
+#include "Carla/Sensor/InfrastructureLidar_OusterOS2128.h"
 
 #endif // LIBCARLA_SENSOR_REGISTRY_WITH_SENSOR_INCLUDES

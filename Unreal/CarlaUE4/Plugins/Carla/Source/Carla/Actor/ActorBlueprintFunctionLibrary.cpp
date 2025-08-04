@@ -1011,7 +1011,7 @@ void UActorBlueprintFunctionLibrary::MakeLidarDefinition(
       StdDevLidar,
       HorizontalFOV});
   }
-  else if (Id == "ray_cast_semantic") {
+  else if (Id == "infrastructure") {
     Definition.Variations.Append({
       Channels,
       Range,
@@ -1019,6 +1019,44 @@ void UActorBlueprintFunctionLibrary::MakeLidarDefinition(
       Frequency,
       UpperFOV,
       LowerFOV,
+      AtmospAttenRate,
+      NoiseSeed,
+      DropOffGenRate,
+      DropOffIntensityLimit,
+      DropOffAtZeroIntensity,
+      StdDevLidar,
+      HorizontalFOV});
+  }
+    else if (Id == "ouster_os2_bh_128") {
+    Definition.Variations.Append({
+      Channels,
+      Range,
+      PointsPerSecond,
+      Frequency,
+      UpperFOV,
+      LowerFOV,
+      AtmospAttenRate,
+      NoiseSeed,
+      DropOffGenRate,
+      DropOffIntensityLimit,
+      DropOffAtZeroIntensity,
+      StdDevLidar,
+      HorizontalFOV});
+  }
+      else if (Id == "ouster_os2_128") {
+    Definition.Variations.Append({
+      Channels,
+      Range,
+      PointsPerSecond,
+      Frequency,
+      UpperFOV,
+      LowerFOV,
+      AtmospAttenRate,
+      NoiseSeed,
+      DropOffGenRate,
+      DropOffIntensityLimit,
+      DropOffAtZeroIntensity,
+      StdDevLidar,
       HorizontalFOV});
   }
   else if (Id == "hesai_at128") {
@@ -1040,6 +1078,16 @@ void UActorBlueprintFunctionLibrary::MakeLidarDefinition(
       DropOffIntensityLimit,
       DropOffAtZeroIntensity,
       StdDevLidar,
+      HorizontalFOV});
+  }
+    else if (Id == "ray_cast_semantic") {
+    Definition.Variations.Append({
+      Channels,
+      Range,
+      PointsPerSecond,
+      Frequency,
+      UpperFOV,
+      LowerFOV,
       HorizontalFOV});
   }
   else {
