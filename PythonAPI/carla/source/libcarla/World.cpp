@@ -254,6 +254,9 @@ void export_world() {
     .value("Props", cr::MapLayer::Props)
     .value("StreetLights", cr::MapLayer::StreetLights)
     .value("Walls", cr::MapLayer::Walls)
+    .value("Scene1", cr::MapLayer::Scene1)
+    .value("Scene2", cr::MapLayer::Scene2)
+    .value("Scene3", cr::MapLayer::Scene3)
     .value("All", cr::MapLayer::All)
   ;
 

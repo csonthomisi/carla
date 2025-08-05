@@ -23,6 +23,9 @@ std::string MapLayerToString(MapLayer MapLayerValue)
     case MapLayer::Props:           return "Props";
     case MapLayer::StreetLights:    return "StreetLights";
     case MapLayer::Walls:           return "Walls";
+    case MapLayer::Scene1:           return "Scene1";
+    case MapLayer::Scene2:           return "Scene2";
+    case MapLayer::Scene3:           return "Scene3";
     case MapLayer::All:             return "All";
     default:                        return "Invalid";
   }

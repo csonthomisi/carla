@@ -27,6 +27,9 @@ enum class MapLayer : MapLayerType
   Props           =  0x1 << 6,
   StreetLights    =  0x1 << 7,
   Walls           =  0x1 << 8,
+  Scene1           =  0x1 << 9,
+  Scene2           =  0x1 << 10,
+  Scene3           =  0x1 << 11,
   All             =  0xFFFF,
 };
 

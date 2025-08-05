@@ -2710,6 +2710,9 @@ class MapLayer(Flag, _CarlaEnum):
     Props = 64
     StreetLights = 128
     Walls = 256
+    Scene1 = 512
+    Scene2 = 1024
+    Scene3 = 2048
     All = 65535
     """All layers selected."""
 
