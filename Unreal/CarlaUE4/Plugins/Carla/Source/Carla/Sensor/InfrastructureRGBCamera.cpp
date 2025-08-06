@@ -6,6 +6,7 @@
 
 #include "Carla.h"
 #include "Carla/Sensor/InfrastructureRGBCamera.h"
+#include "Carla/Sensor/SceneCaptureCamera.h"
 #include "Carla/Game/CarlaEngine.h"
 #include <chrono>
 
@@ -31,7 +32,7 @@ AInfrastructureRGBCamera::AInfrastructureRGBCamera(const FObjectInitializer& Obj
     VisualMesh->SetCastShadow(false);
 
     // Load the mesh asset by path (change the path to your actual imported mesh)
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Carla/Blueprints/Sensors/cctv.cctv"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Carla/Blueprints/Sensors/cctv2.cctv2"));
 
     if (MeshAsset.Succeeded())
     {

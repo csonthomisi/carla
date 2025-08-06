@@ -65,7 +65,11 @@ enum ESensors {
   InstanceSegmentationCamera,
   WorldObserver,
   CameraGBufferUint8,
-  CameraGBufferFloat
+  CameraGBufferFloat,
+  V2XSensor,
+  CustomV2XSensor,
+  InfrastructureLidar_HesaiAT128,
+  InfrastructureRGBCamera
 };
 
 void ROS2::Enable(bool enable) {
@@ -241,7 +245,13 @@ std::shared_ptr<BasePublisher> ROS2::GetOrCreateSensor(int type, void* actor) {
     case ESensors::WorldObserver:
     case ESensors::CameraGBufferUint8:
     case ESensors::CameraGBufferFloat:
+    case ESensors::V2XSensor:
+    case ESensors::CustomV2XSensor:
       return nullptr;
+    case ESensors::InfrastructureLidar_HesaiAT128:
+      return create_and_register(std::make_shared<CarlaLidarPublisher>(topic_name, frame_id));
+    case ESensors::InfrastructureRGBCamera:
+      return create_and_register(std::make_shared<CarlaRGBCameraPublisher>(topic_name, frame_id));
   }
 }
 
@@ -250,7 +260,6 @@ void ROS2::ProcessDataFromCamera(
     const carla::geom::Transform sensor_transform,
     const carla::SharedBufferView buffer,
     void *actor) {
-
   auto base_publisher = GetOrCreateSensor(sensor_type, actor);
   auto sensor_publisher = std::dynamic_pointer_cast<CarlaCameraPublisher>(base_publisher);
   auto transform_publisher = GetOrCreateTransformPublisher(actor);

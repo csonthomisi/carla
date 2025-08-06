@@ -192,9 +192,10 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
                   // auto StreamId = carla::streaming::detail::token_type(Sensor.GetToken()).get_stream_id();
                   auto Res = std::async(std::launch::async, [&Sensor, ROS2, &Stream, BufView]()
                   {
+                    uint64_t sensor_type = Stream.GetSensorType();
                     AActor* ParentActor = Sensor.GetAttachParentActor();
                     auto Transform = (ParentActor) ? Sensor.GetActorTransform().GetRelativeTransform(ParentActor->GetActorTransform()) : Stream.GetSensorTransform();
-                    ROS2->ProcessDataFromCamera(Stream.GetSensorType(), Transform, BufView, &Sensor);
+                    ROS2->ProcessDataFromCamera(sensor_type, Transform, BufView, &Sensor);
                   });
                 }
                 #endif
