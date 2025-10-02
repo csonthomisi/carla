@@ -1,0 +1,12 @@
+{
+  "maps": [
+  ],
+  "props": [
+    {
+      "name": "Lexus_Prop_2",
+      "size": "medium",
+      "source": "./Props/Lexus_Prop_2/Lexus_Prop_2.fbx",
+      "tag": "Vehicles"
+    }
+  ]
+}

@@ -365,6 +365,7 @@ private:
     auto ROS2 = carla::ros2::ROS2::GetInstance();
     if (ROS2->IsEnabled())
       ROS2->SetTimestamp(GetElapsedGameTime());
+      // ROS2->SetTimestampFromSystemClock();
     #endif
 
   }

@@ -38,6 +38,7 @@
 #include "subscribers/CarlaEgoVehicleControlSubscriber.h"
 
 #include <vector>
+#include <chrono>
 
 namespace carla {
 namespace ros2 {
@@ -89,6 +90,26 @@ void ROS2::SetFrame(uint64_t frame) {
     subscriber->ProcessMessages(callback);
   }
 }
+
+// void ROS2::SetTimestampFromSystemClock() {
+//   using namespace std::chrono;
+
+//   // Get current time point
+//   auto now = system_clock::now();
+//   auto duration = now.time_since_epoch();
+
+//   // Avoid shadowing std::chrono types by using different variable names
+//   auto sec = duration_cast<std::chrono::seconds>(duration).count();
+//   auto nsec = duration_cast<std::chrono::nanoseconds>(duration).count() % 1000000000;
+
+//   // Set internal variables
+//   _seconds = static_cast<int32_t>(sec);
+//   _nanoseconds = static_cast<uint32_t>(nsec);
+
+//   // Publish clock message
+//   _clock_publisher->Write(_seconds, _nanoseconds);
+//   _clock_publisher->Publish();
+// }
 
 void ROS2::SetTimestamp(double timestamp) {
   double integral;

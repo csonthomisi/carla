@@ -80,6 +80,7 @@ class ROS2
 
     void RegisterVehicle(void *actor, std::string ros_name, std::string frame_id, ActorCallback callback);
     void UnregisterVehicle(void *actor);
+    void SetTimestampFromSystemClock();
 
     // Receiving data to publish
     void ProcessDataFromCamera(
