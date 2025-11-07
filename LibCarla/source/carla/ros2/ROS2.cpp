@@ -66,7 +66,8 @@ enum ESensors {
   WorldObserver,
   CameraGBufferUint8,
   CameraGBufferFloat,
-  HSSLidar
+  HSSLidar,
+  AT128
 };
 
 void ROS2::Enable(bool enable) {
@@ -244,6 +245,8 @@ std::shared_ptr<BasePublisher> ROS2::GetOrCreateSensor(int type, void* actor) {
     case ESensors::CameraGBufferFloat:
       return nullptr;
     case ESensors::HSSLidar:
+      return create_and_register(std::make_shared<CarlaLidarPublisher>(topic_name, frame_id));
+    case ESensors::AT128:
       return create_and_register(std::make_shared<CarlaLidarPublisher>(topic_name, frame_id));
   }
 }

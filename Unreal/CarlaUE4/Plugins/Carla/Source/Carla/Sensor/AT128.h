@@ -42,7 +42,7 @@ protected:
 private:
   /// Compute the received intensity of the point
   float ComputeIntensity(const FSemanticDetection& RawDetection) const;
-  FDetection ComputeDetection(const FHitResult& HitInfo, const FTransform& SensorTransf) const;
+  FDetection ComputeDetection(const FHitResult& HitInfo, const FTransform& SensorTransf, int32 ChannelIdx) const;
 
   void PreprocessRays(uint32_t Channels, uint32_t MaxPointsPerChannel) override;
   bool PostprocessDetection(FDetection& Detection) const;
@@ -61,4 +61,8 @@ private:
   /// beta = (1 - dropoff_zero_intensity)
   float DropOffAlpha;
   float DropOffBeta;
+  TArray<float> ChannelHorizOffsetsRad;   // per-channel azimuth offsets (radians)
+  TArray<float> ChannelMinRange;   // per-channel min distance [m]
+  TArray<float> ChannelMaxRange;   // per-channel max distance [m]
+
 };
