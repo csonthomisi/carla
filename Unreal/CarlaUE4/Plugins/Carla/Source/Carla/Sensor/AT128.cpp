@@ -74,6 +74,13 @@ static bool IsNearFieldEnabled(int ch) {
   return (m == 3 || m == 7 || m == 11 || m == 15);
 }
 
+// --- AT128 fixed geometry constants (degrees/meters) ---
+static constexpr uint32 kChannels   = 128u;
+static constexpr float  kHFOV_deg   = 120.0f;  // horizontal FOV (deg)
+static constexpr float  kHRes_deg   = 0.1f;    // horizontal step (deg)
+static constexpr float  kMaxRange_m = 260.0f;  // hardware ceiling
+
+
 // --- Fill per-channel min / max ranges according to the manual (§ 1.5 + Appendix A) ---
 static void FillAT128Ranges(std::vector<float>& minR, std::vector<float>& maxR) {
   minR.resize(128);
@@ -114,13 +121,13 @@ void AAT128::Set(const FActorDescription &ActorDescription)
 void AAT128::Set(const FLidarDescription &LidarDescription)
 {
   Description = LidarDescription;
-  LidarData = FLidarData(Description.Channels);
+  LidarData = FLidarData(kChannels);//Description.Channels);
   CreateLasers();
   // --- Replace default evenly spaced angles with AT128 vertical table ---
   LaserAngles.Empty();
-  LaserAngles.Reserve(128);
+  LaserAngles.Reserve(kChannels);
 
-  for (int i = 0; i < 128; ++i) {
+  for (int i = 0; i < kChannels; ++i) {
     LaserAngles.Add(kAT128P_VertDeg[i]);   // nincs DegreesToRadians!
   }
 
@@ -136,7 +143,7 @@ void AAT128::Set(const FLidarDescription &LidarDescription)
   ChannelHorizOffsetsRad.Empty();
   ChannelHorizOffsetsRad.Reserve(128);
 
-  for (int i = 0; i < 128; ++i) {
+  for (int i = 0; i < kChannels; ++i) {
     ChannelHorizOffsetsRad.Add(FMath::DegreesToRadians(kAT128P_HorizDeg[i]));
   }
   
@@ -147,16 +154,16 @@ void AAT128::Set(const FLidarDescription &LidarDescription)
     FillAT128Ranges(minR, maxR);
     ChannelMinRange.Empty();
     ChannelMaxRange.Empty();
-    ChannelMinRange.Reserve(128);
-    ChannelMaxRange.Reserve(128);
-    for (int i = 0; i < 128; ++i) {
+    ChannelMinRange.Reserve(kChannels);
+    ChannelMaxRange.Reserve(kChannels);
+    for (int i = 0; i < kChannels; ++i) {
       ChannelMinRange.Add(minR[i]);
       ChannelMaxRange.Add(maxR[i]);
     }
   }
 
 
-  PointsPerChannel.resize(Description.Channels);
+  PointsPerChannel.resize(kChannels);//Description.Channels);
 
   // Compute drop off model parameters
   DropOffBeta = 1.0f - Description.DropOffAtZeroIntensity;
@@ -213,7 +220,9 @@ AAT128::FDetection AAT128::ComputeDetection(const FHitResult& HitInfo, const FTr
   const float Distance = Detection.point.Length();
   // --- Enforce per-channel range limits (manual § 1.5 + Appendix A):contentReference[oaicite:1]{index=1} ---
   const float dmin = ChannelMinRange.IsValidIndex(ChannelIdx) ? ChannelMinRange[ChannelIdx] : 0.5f;
-  const float dmax = ChannelMaxRange.IsValidIndex(ChannelIdx) ? ChannelMaxRange[ChannelIdx] : Description.Range;
+  const float per_ch_max = ChannelMaxRange.IsValidIndex(ChannelIdx) ? ChannelMaxRange[ChannelIdx] : kMaxRange_m;
+  const float dmax = FMath::Min(per_ch_max, Description.Range);
+
 
   if (Distance < dmin || Distance > dmax) {
     return {};             // discard this hit
@@ -255,12 +264,12 @@ AAT128::FDetection AAT128::ComputeDetection(const FHitResult& HitInfo, const FTr
   }
 
   void AAT128::ComputeAndSaveDetections(const FTransform& SensorTransform) {
-    for (auto idxChannel = 0u; idxChannel < Description.Channels; ++idxChannel)
+    for (auto idxChannel = 0u; idxChannel < kChannels; ++idxChannel)//Description.Channels; ++idxChannel)
       PointsPerChannel[idxChannel] = RecordedHits[idxChannel].size();
 
     LidarData.ResetMemory(PointsPerChannel);
 
-    for (auto idxChannel = 0u; idxChannel < Description.Channels; ++idxChannel) {
+    for (auto idxChannel = 0u; idxChannel < kChannels; ++idxChannel) {//Description.Channels; ++idxChannel) {
       for (auto& hit : RecordedHits[idxChannel]) {
         FDetection Detection = ComputeDetection(hit, SensorTransform, static_cast<int32>(idxChannel));
         if (PostprocessDetection(Detection))
@@ -298,11 +307,12 @@ static float SnapToStep(float value, float step) {
 void AAT128::SimulateLidar(const float DeltaTime)
 {
   TRACE_CPUPROFILER_EVENT_SCOPE(AAT128::SimulateLidar);
-  const uint32 ChannelCount = Description.Channels;
-  const float HorizontalResolution = SnapToStep(Description.HorizontalResolution, 0.01f);
-  const uint32 PointsToScanWithOneLaser = Description.HorizontalFov / HorizontalResolution;
-
-
+  // const uint32 ChannelCount = 128;//Description.Channels;
+  // const float HorizontalResolution = SnapToStep(kHorizontalFov,kHorizontalRes); //Description.HorizontalResolution, 0.01f);
+  // const uint32 PointsToScanWithOneLaser = kHorizontalFov / HorizontalResolution;//Description.HorizontalFov / HorizontalResolution;
+  const uint32 ChannelCount = kChannels;
+  const float  stepDeg = kHRes_deg;  // fixed 0.1°
+  const uint32 PointsToScanWithOneLaser = static_cast<uint32>(kHFOV_deg / stepDeg); // e.g., 120 / 0.1 = 1200
 
 
   if (PointsToScanWithOneLaser <= 0)
@@ -335,11 +345,12 @@ void AAT128::SimulateLidar(const float DeltaTime)
         FHitResult HitResult;
         
         // --- Correct horizontal sweep computation ---
-        const float stepDeg = Description.HorizontalFov / static_cast<float>(PointsToScanWithOneLaser - 1);
+        //const float stepDeg = kHFOV_deg / static_cast<float>(PointsToScanWithOneLaser - 1); //Description.HorizontalFov / static_cast<float>(PointsToScanWithOneLaser - 1);
 
         // Base horizontal sweep, centered on sensor’s forward axis
         const float baseHorizDeg =
-            -Description.HorizontalFov * 0.5f + static_cast<float>(idxPtsOneLaser) * stepDeg;
+            -kHFOV_deg * 0.5f + static_cast<float>(idxPtsOneLaser) * stepDeg;
+            //-Description.HorizontalFov * 0.5f + static_cast<float>(idxPtsOneLaser) * stepDeg;
 
         // Per-channel azimuth offset (manual ±2.4° / ±0.65° pattern)
         const float offsetDeg = ChannelHorizOffsetsRad.IsValidIndex(idxChannel)

@@ -1094,32 +1094,33 @@ void UActorBlueprintFunctionLibrary::MakeLidarDefinition(
       HorizontalResolution});
   }
   else if (Id == "at128") {
-    // Horizontal Resolution
-    FActorVariation HorizontalResolution;
-    HorizontalResolution.Id = TEXT("horizontal_resolution");
-    HorizontalResolution.Type = EActorAttributeType::Float;
-    HorizontalResolution.RecommendedValues = { TEXT("0.1") };
+    // // Horizontal Resolution
+    // FActorVariation HorizontalResolution;
+    // HorizontalResolution.Id = TEXT("horizontal_resolution");
+    // HorizontalResolution.Type = EActorAttributeType::Float;
+    // HorizontalResolution.RecommendedValues = { TEXT("0.1") };
 
-    Channels.RecommendedValues = { TEXT("128") };
-    UpperFOV.RecommendedValues = { TEXT("12.9") };
-    LowerFOV.RecommendedValues = { TEXT("-12.5") };
-    Range.RecommendedValues = { TEXT("200") };
-    Frequency.RecommendedValues = { TEXT("20") };
-    HorizontalFOV.RecommendedValues = { TEXT("120.0") };
+    // Channels.RecommendedValues = { TEXT("128") };
+    // UpperFOV.RecommendedValues = { TEXT("12.9") };
+    // LowerFOV.RecommendedValues = { TEXT("-12.5") };
+    Range.RecommendedValues = { TEXT("260") };
+    // Frequency.RecommendedValues = { TEXT("20") };
+    // HorizontalFOV.RecommendedValues = { TEXT("120.0") };
     Definition.Variations.Append({
-      Channels,
+      // Channels,
       Range,
-      Frequency,
-      UpperFOV,
-      LowerFOV,
+      // Frequency,
+      // UpperFOV,
+      // LowerFOV,
       AtmospAttenRate,
       NoiseSeed,
       DropOffGenRate,
       DropOffIntensityLimit,
       DropOffAtZeroIntensity,
       StdDevLidar,
-      HorizontalFOV,
-      HorizontalResolution});
+      // HorizontalFOV,
+      // HorizontalResolution
+      });
   }
   else if (Id == "ray_cast_semantic") {
     Definition.Variations.Append({
