@@ -248,20 +248,51 @@ AAT128::FDetection AAT128::ComputeDetection(const FHitResult& HitInfo, const FTr
     }
   }
 
+  // bool AAT128::PostprocessDetection(FDetection& Detection) const
+  // {
+  //   if (Description.NoiseStdDev > std::numeric_limits<float>::epsilon()) {
+  //     const auto ForwardVector = Detection.point.MakeUnitVector();
+  //     const auto Noise = ForwardVector * RandomEngine->GetNormalDistribution(0.0f, Description.NoiseStdDev);
+  //     Detection.point += Noise;
+  //   }
+    
+
+  //   const float Intensity = Detection.intensity;
+  //   if(Intensity > Description.DropOffIntensityLimit)
+  //     return true;
+  //   else
+  //     return RandomEngine->GetUniformFloat() < DropOffAlpha * Intensity + DropOffBeta;
+  // }
+
   bool AAT128::PostprocessDetection(FDetection& Detection) const
   {
-    if (Description.NoiseStdDev > std::numeric_limits<float>::epsilon()) {
-      const auto ForwardVector = Detection.point.MakeUnitVector();
-      const auto Noise = ForwardVector * RandomEngine->GetNormalDistribution(0.0f, Description.NoiseStdDev);
-      Detection.point += Noise;
+    // 1) Hard drop invalid / out-of-range detections
+    //    (ComputeDetection returns {} for those → point=(0,0,0), intensity=0)
+    if (Detection.intensity <= 0.0f) {
+      return false;
     }
 
-    const float Intensity = Detection.intensity;
-    if(Intensity > Description.DropOffIntensityLimit)
+    const float len = Detection.point.Length(); // carla::geom vector length
+    if (len <= 2.0f * std::numeric_limits<float>::epsilon()) {
+      // zero-length (or near-zero) → invalid, do NOT add noise, just drop
+      return false;
+    }
+
+    // 2) Add directional noise ONLY to valid detections
+    if (Description.NoiseStdDev > std::numeric_limits<float>::epsilon()) {
+      const auto forward = Detection.point / len; // stays in carla::geom types
+      const auto noise   = forward * RandomEngine->GetNormalDistribution(0.0f, Description.NoiseStdDev);
+      Detection.point += noise;
+    }
+
+    // 3) Intensity-based keep/drop
+    const float I = Detection.intensity;
+    if (I > Description.DropOffIntensityLimit) {
       return true;
-    else
-      return RandomEngine->GetUniformFloat() < DropOffAlpha * Intensity + DropOffBeta;
+    }
+    return RandomEngine->GetUniformFloat() < (DropOffAlpha * I + DropOffBeta);
   }
+
 
   void AAT128::ComputeAndSaveDetections(const FTransform& SensorTransform) {
     for (auto idxChannel = 0u; idxChannel < kChannels; ++idxChannel)//Description.Channels; ++idxChannel)
